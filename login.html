@@ -49,11 +49,33 @@
     <div class="card">
         <h2>Welcome Back</h2>
         <p>Please enter your BDU student credentials.</p>
-        <form onsubmit="window.location.href='dashboard.html'; return false;">
-            <input type="text" placeholder="Username or ID" required>
-            <input type="password" placeholder="Password" required>
-            <button type="submit" class="login-btn">SIGN IN</button>
+
+        <form id="loginForm">
+            <!-- Username input ከ id ጋር -->
+            <input type="text" id="username" placeholder="Username (haile)" required>
+            
+            <!-- Password input ከ id ጋር -->
+            <input type="password" id="password" placeholder="Password (bdu123)" required>
+            
+            <!-- አዲሱ በተን -->
+            <button type="button" onclick="checkLogin()" class="login-btn">
+                SIGN IN
+            </button>
         </form>
     </div>
+
+    <!-- ይህ የቼክ ማድረጊያው ኮድ ነው -->
+    <script>
+        function checkLogin() {
+            var user = document.getElementById("username").value;
+            var pass = document.getElementById("password").value;
+
+            if (user === "haile" && pass === "bdu123") {
+                window.location.href = "dashboard.html";
+            } else {
+                alert("የተሳሳተ Username ወይም Password ተጠቅመዋል። እባክዎ እንደገና ይሞክሩ!");
+            }
+        }
+    </script>
 </body>
 </html>
