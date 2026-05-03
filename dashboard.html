@@ -5,77 +5,122 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | BDU Library</title>
     <style>
-        body { display: flex; margin: 0; background: #f8f9fa; font-family: sans-serif; }
+        /* መሰረታዊ ዲዛይን */
+        body { display: flex; margin: 0; background: #f4f7f6; font-family: sans-serif; transition: 0.3s; }
         
         /* Sidebar */
-        .sidebar {
-            width: 260px;
-            background: #14213d;
-            height: 100vh;
-            color: white;
-            padding: 30px 20px;
-            position: fixed;
-        }
-        
+        .sidebar { width: 260px; background: #14213d; height: 100vh; color: white; padding: 30px 20px; position: fixed; transition: 0.3s; }
         .sidebar h2 { color: #fca311; margin-bottom: 40px; }
         .menu-item { padding: 15px; cursor: pointer; color: #adb5bd; transition: 0.3s; }
         .menu-item:hover { color: white; background: rgba(255,255,255,0.1); border-radius: 5px; }
 
-        /* Content Area */
-        .main { margin-left: 260px; padding: 40px; width: 100%; }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        /* Main Content */
+        .main { margin-left: 260px; padding: 40px; width: 100%; min-height: 100vh; transition: 0.3s; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
-        .resource-card {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            border-left: 5px solid #fca311;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-        .resource-card h3 { margin-bottom: 10px; color: #14213d; }
-        .btn-sm { padding: 8px 15px; background: #e5e5e5; text-decoration: none; color: #333; font-size: 0.8rem; border-radius: 3px; }
+        /* Dark Mode Button */
+        #mode-btn { padding: 10px 20px; cursor: pointer; border-radius: 20px; border: none; background: #fca311; font-weight: bold; transition: 0.3s; }
+
+        /* Course Cards */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .resource-card { background: white; padding: 25px; border-radius: 10px; border-left: 5px solid #fca311; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; }
+        .resource-card h3 { margin-top: 0; color: #14213d; }
+        .btn-sm { display: inline-block; margin-top: 15px; padding: 8px 15px; background: #e5e5e5; text-decoration: none; color: #333; font-size: 0.8rem; border-radius: 5px; }
+        .btn-sm:hover { background: #fca311; color: white; }
+
+        /* --- Dark Mode Styles --- */
+        body.dark-mode { background-color: #1a1a1a; color: #ffffff; }
+        .dark-mode .sidebar { background-color: #000000; }
+        .dark-mode .main { background-color: #1a1a1a; }
+        .dark-mode .resource-card { background-color: #2d2d2d; color: white; border-left: 5px solid #fca311; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .dark-mode .resource-card h3 { color: #fca311; }
+        .dark-mode header h1 { color: #ffffff; }
+        .dark-mode .btn-sm { background: #444; color: #eee; }
 
         @media (max-width: 900px) {
-            .sidebar { width: 70px; }
+            .sidebar { width: 70px; padding: 20px 10px; }
             .sidebar h2, .menu-item span { display: none; }
             .main { margin-left: 70px; }
         }
     </style>
 </head>
 <body>
+
     <div class="sidebar">
         <h2>BDU BiT</h2>
-        <div class="menu-item"><span>🏠 Dashboard</span></div>
-        <div class="menu-item"><span>📚 My Courses</span></div>
-        <div class="menu-item"><span>⚙️ Settings</span></div>
+        <div class="menu-item">🏠 <span>Dashboard</span></div>
+        <div class="menu-item">💻 <span>Computing</span></div>
+        <div class="menu-item">🏗️ <span>Engineering</span></div>
+        <div class="menu-item">⚙️ <span>Settings</span></div>
         <br>
-        <a href="index.html" style="color: #fca311; text-decoration: none; padding-left: 15px;">Logout</a>
+        <a href="index.html" style="color: #fca311; text-decoration: none; padding: 10px;">Logout</a>
     </div>
 
     <div class="main">
         <header>
-            <h1>Student Dashboard</h1>
-            <div style="background: white; padding: 10px; border-radius: 5px;">📍 Bahir Dar, Ethiopia</div>
+            <h1>BiT Digital Library</h1>
+            <button onclick="toggleDarkMode()" id="mode-btn">🌙 Dark Mode</button>
         </header>
 
+        <!-- Computing Section -->
+        <h2 style="margin-bottom: 20px;">💻 Computing Courses</h2>
         <div class="grid">
             <div class="resource-card">
-                <h3>Full Stack Web Dev</h3>
-                <p>Curriculum 2026</p><br>
-                <a href="#" class="btn-sm">View Folder</a>
+                <h3>Introduction to C++</h3>
+                <p>Fundamental programming concepts for beginners.</p>
+                <a href="#" class="btn-sm">Download PDF</a>
             </div>
             <div class="resource-card">
-                <h3>Python for AI</h3>
-                <p>Advanced PDF</p><br>
-                <a href="#" class="btn-sm">Download</a>
+                <h3>Data Structures</h3>
+                <p>Advanced concepts for software efficiency.</p>
+                <a href="#" class="btn-sm">Download PDF</a>
             </div>
             <div class="resource-card">
-                <h3>System Security</h3>
-                <p>Lab Manual</p><br>
-                <a href="#" class="btn-sm">Access Lab</a>
+                <h3>Database Systems</h3>
+                <p>SQL and data management principles.</p>
+                <a href="#" class="btn-sm">Download PDF</a>
+            </div>
+        </div>
+
+        <br><br>
+
+        <!-- Engineering Section -->
+        <h2 style="margin-bottom: 20px;">🏗️ Engineering Courses</h2>
+        <div class="grid">
+            <div class="resource-card">
+                <h3>Applied Mathematics III</h3>
+                <p>Advanced calculus for engineering students.</p>
+                <a href="#" class="btn-sm">Download PDF</a>
+            </div>
+            <div class="resource-card">
+                <h3>Engineering Mechanics</h3>
+                <p>Statics and Dynamics fundamentals.</p>
+                <a href="#" class="btn-sm">Download PDF</a>
+            </div>
+            <div class="resource-card">
+                <h3>Electrical Circuits</h3>
+                <p>Basic circuit analysis and components.</p>
+                <a href="#" class="btn-sm">Download PDF</a>
             </div>
         </div>
     </div>
+
+    <script>
+        function toggleDarkMode() {
+            var element = document.body;
+            element.classList.toggle("dark-mode");
+            
+            var btn = document.getElementById("mode-btn");
+            if (element.classList.contains("dark-mode")) {
+                btn.innerHTML = "☀️ Light Mode";
+                btn.style.background = "#ffffff";
+                btn.style.color = "#000000";
+            } else {
+                btn.innerHTML = "🌙 Dark Mode";
+                btn.style.background = "#fca311";
+                btn.style.color = "#000000";
+            }
+        }
+    </script>
 </body>
 </html>
