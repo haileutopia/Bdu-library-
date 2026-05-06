@@ -5,43 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | BDU Library</title>
     <style>
-        /* መሰረታዊ ዲዛይን */
         body { display: flex; margin: 0; background: #f4f7f6; font-family: sans-serif; transition: 0.3s; }
-        
-        /* Sidebar */
-        .sidebar { width: 260px; background: #14213d; height: 100vh; color: white; padding: 30px 20px; position: fixed; transition: 0.3s; }
+        .sidebar { width: 260px; background: #14213d; height: 100vh; color: white; padding: 30px 20px; position: fixed; transition: 0.3s; z-index: 1000; }
         .sidebar h2 { color: #fca311; margin-bottom: 40px; }
         .menu-item { padding: 15px; cursor: pointer; color: #adb5bd; transition: 0.3s; }
         .menu-item:hover { color: white; background: rgba(255,255,255,0.1); border-radius: 5px; }
-
-        /* Main Content */
         .main { margin-left: 260px; padding: 40px; width: 100%; min-height: 100vh; transition: 0.3s; }
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        
-        /* Dark Mode Button */
         #mode-btn { padding: 10px 20px; cursor: pointer; border-radius: 20px; border: none; background: #fca311; font-weight: bold; transition: 0.3s; }
-
-        /* Course Cards */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-bottom: 40px; }
         .resource-card { background: white; padding: 25px; border-radius: 10px; border-left: 5px solid #fca311; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; }
         .resource-card h3 { margin-top: 0; color: #14213d; }
         .btn-sm { display: inline-block; margin-top: 15px; padding: 8px 15px; background: #e5e5e5; text-decoration: none; color: #333; font-size: 0.8rem; border-radius: 5px; }
         .btn-sm:hover { background: #fca311; color: white; }
-
-        /* --- Dark Mode Styles --- */
         body.dark-mode { background-color: #1a1a1a; color: #ffffff; }
         .dark-mode .sidebar { background-color: #000000; }
-        .dark-mode .main { background-color: #1a1a1a; }
-        .dark-mode .resource-card { background-color: #2d2d2d; color: white; border-left: 5px solid #fca311; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .dark-mode .resource-card { background-color: #2d2d2d; color: white; }
         .dark-mode .resource-card h3 { color: #fca311; }
-        .dark-mode header h1 { color: #ffffff; }
-        .dark-mode .btn-sm { background: #444; color: #eee; }
-
-        @media (max-width: 900px) {
-            .sidebar { width: 70px; padding: 20px 10px; }
-            .sidebar h2, .menu-item span { display: none; }
-            .main { margin-left: 70px; }
-        }
+        @media (max-width: 900px) { .sidebar { width: 70px; padding: 20px 10px; } .sidebar h2, .menu-item span { display: none; } .main { margin-left: 70px; } }
     </style>
 </head>
 <body>
@@ -51,7 +32,6 @@
         <div class="menu-item">🏠 <span>Dashboard</span></div>
         <div class="menu-item">💻 <span>Computing</span></div>
         <div class="menu-item">🏗️ <span>Engineering</span></div>
-        <div class="menu-item">⚙️ <span>Settings</span></div>
         <br>
         <a href="index.html" style="color: #fca311; text-decoration: none; padding: 10px;">Logout</a>
     </div>
@@ -62,64 +42,87 @@
             <button onclick="toggleDarkMode()" id="mode-btn">🌙 Dark Mode</button>
         </header>
 
-        <!-- Computing Section -->
         <h2 style="margin-bottom: 20px;">💻 Computing Courses</h2>
-        <div class="grid">
-            <div class="resource-card">
-                <h3>Introduction to C++</h3>
-                <p>Fundamental programming concepts for beginners.</p>
-                <a href="#" class="btn-sm">Download PDF</a>
-            </div>
-            <div class="resource-card">
-                <h3>Data Structures</h3>
-                <p>Advanced concepts for software efficiency.</p>
-                <a href="#" class="btn-sm">Download PDF</a>
-            </div>
-            <div class="resource-card">
-                <h3>Database Systems</h3>
-                <p>SQL and data management principles.</p>
-                <a href="#" class="btn-sm">Download PDF</a>
-            </div>
+        <div class="grid" id="computing-grid">
+            <p>Loading computing books...</p>
         </div>
 
-        <br><br>
-
-        <!-- Engineering Section -->
         <h2 style="margin-bottom: 20px;">🏗️ Engineering Courses</h2>
-        <div class="grid">
-            <div class="resource-card">
-                <h3>Applied Mathematics III</h3>
-                <p>Advanced calculus for engineering students.</p>
-                <a href="#" class="btn-sm">Download PDF</a>
-            </div>
-            <div class="resource-card">
-                <h3>Engineering Mechanics</h3>
-                <p>Statics and Dynamics fundamentals.</p>
-                <a href="#" class="btn-sm">Download PDF</a>
-            </div>
-            <div class="resource-card">
-                <h3>Electrical Circuits</h3>
-                <p>Basic circuit analysis and components.</p>
-                <a href="#" class="btn-sm">Download PDF</a>
-            </div>
+        <div class="grid" id="engineering-grid">
+            <p>Loading engineering books...</p>
         </div>
     </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAffCW8wwCs8f2YmpNfHFdOukrEc_CwVRU",
+            authDomain: "bit-library-5b48a.firebaseapp.com",
+            projectId: "bit-library-5b48a",
+            storageBucket: "bit-library-5b48a.firebasestorage.app",
+            messagingSenderId: "945815538835",
+            appId: "1:945815538835:web:2dd95cd993dc6c2865d166"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function loadBooks() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "books"));
+                const computingGrid = document.getElementById("computing-grid");
+                const engineeringGrid = document.getElementById("engineering-grid");
+
+                computingGrid.innerHTML = "";
+                engineeringGrid.innerHTML = "";
+
+                let computingCount = 0;
+                let engineeringCount = 0;
+
+                querySnapshot.forEach((doc) => {
+                    const book = doc.data();
+                    const bookHTML = `
+                        <div class="resource-card">
+                            <h3>${book.title}</h3>
+                            <p>${book.description || 'No description available'}</p>
+                            <a href="${book.link || '#'}" class="btn-sm" target="_blank">Download PDF</a>
+                        </div>
+                    `;
+
+                    // እዚህ ጋር ነው ስህተቱን ያስተካከልኩት - trim() እና toLowerCase() ተጨምሯል
+                    const category = book.category ? book.category.trim().toLowerCase() : "";
+
+                    if (category === "computing") {
+                        computingGrid.innerHTML += bookHTML;
+                        computingCount++;
+                    } else if (category === "engineering") {
+                        engineeringGrid.innerHTML += bookHTML;
+                        engineeringCount++;
+                    }
+                });
+
+                if(computingCount === 0) computingGrid.innerHTML = "<p>No computing books found.</p>";
+                if(engineeringCount === 0) engineeringGrid.innerHTML = "<p>No engineering books found.</p>";
+
+                console.log("Books loaded successfully!");
+            } catch (error) {
+                console.error("Error loading books: ", error);
+                document.getElementById("computing-grid").innerHTML = "<p>Error loading data. Check Firebase Rules.</p>";
+            }
+        }
+
+        loadBooks();
+    </script>
 
     <script>
         function toggleDarkMode() {
             var element = document.body;
             element.classList.toggle("dark-mode");
-            
             var btn = document.getElementById("mode-btn");
-            if (element.classList.contains("dark-mode")) {
-                btn.innerHTML = "☀️ Light Mode";
-                btn.style.background = "#ffffff";
-                btn.style.color = "#000000";
-            } else {
-                btn.innerHTML = "🌙 Dark Mode";
-                btn.style.background = "#fca311";
-                btn.style.color = "#000000";
-            }
+            btn.innerHTML = element.classList.contains("dark-mode") ? "☀️ Light Mode" : "🌙 Dark Mode";
         }
     </script>
 </body>
