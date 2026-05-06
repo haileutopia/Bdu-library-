@@ -5,27 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | BDU Library</title>
     <style>
-        /* CSS ዲዛይን */
-        body { display: flex; margin: 0; background: #f4f7f6; font-family: sans-serif; transition: 0.3s; }
+        body { display: flex; margin: 0; background: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: 0.3s; }
         .sidebar { width: 260px; background: #14213d; height: 100vh; color: white; padding: 30px 20px; position: fixed; transition: 0.3s; z-index: 1000; }
-        .sidebar h2 { color: #fca311; margin-bottom: 40px; }
-        .menu-item { padding: 15px; cursor: pointer; color: #adb5bd; transition: 0.3s; }
+        .sidebar h2 { color: #fca311; margin-bottom: 40px; font-size: 24px; }
+        .menu-item { padding: 15px; cursor: pointer; color: #adb5bd; transition: 0.3s; display: block; text-decoration: none; }
         .menu-item:hover { color: white; background: rgba(255,255,255,0.1); border-radius: 5px; }
         .main { margin-left: 260px; padding: 40px; width: 100%; min-height: 100vh; transition: 0.3s; }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #e5e5e5; padding-bottom: 10px; }
         #mode-btn { padding: 10px 20px; cursor: pointer; border-radius: 20px; border: none; background: #fca311; font-weight: bold; transition: 0.3s; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-bottom: 40px; }
-        .resource-card { background: white; padding: 25px; border-radius: 10px; border-left: 5px solid #fca311; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; }
-        .resource-card h3 { margin-top: 0; color: #14213d; }
-        .btn-sm { display: inline-block; margin-top: 15px; padding: 8px 15px; background: #e5e5e5; text-decoration: none; color: #333; font-size: 0.8rem; border-radius: 5px; }
-        .btn-sm:hover { background: #fca311; color: white; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .resource-card { background: white; padding: 25px; border-radius: 12px; border-left: 6px solid #fca311; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: 0.3s; }
+        .resource-card:hover { transform: translateY(-5px); }
+        .resource-card h3 { margin-top: 0; color: #14213d; font-size: 1.2rem; }
+        .resource-card p { color: #555; font-size: 0.9rem; line-height: 1.5; }
+        .btn-sm { display: inline-block; margin-top: 15px; padding: 10px 20px; background: #14213d; text-decoration: none; color: white; font-size: 0.85rem; border-radius: 6px; font-weight: bold; }
+        .btn-sm:hover { background: #fca311; color: #14213d; }
         
         /* Dark Mode */
         body.dark-mode { background-color: #1a1a1a; color: #ffffff; }
         .dark-mode .sidebar { background-color: #000000; }
-        .dark-mode .resource-card { background-color: #2d2d2d; color: white; }
+        .dark-mode .resource-card { background-color: #2d2d2d; color: white; border-left: 6px solid #fca311; }
         .dark-mode .resource-card h3 { color: #fca311; }
-        
+        .dark-mode .resource-card p { color: #ccc; }
+        .dark-mode header { border-bottom: 2px solid #333; }
+
         @media (max-width: 900px) { .sidebar { width: 70px; padding: 20px 10px; } .sidebar h2, .menu-item span { display: none; } .main { margin-left: 70px; } }
     </style>
 </head>
@@ -33,11 +36,11 @@
 
     <div class="sidebar">
         <h2>BDU BiT</h2>
-        <div class="menu-item">🏠 <span>Dashboard</span></div>
-        <div class="menu-item">💻 <span>Computing</span></div>
-        <div class="menu-item">🏗️ <span>Engineering</span></div>
+        <a href="#" class="menu-item">🏠 <span>Dashboard</span></a>
+        <a href="#comp-sec" class="menu-item">💻 <span>Computing</span></a>
+        <a href="#eng-sec" class="menu-item">🏗️ <span>Engineering</span></a>
         <br>
-        <a href="index.html" style="color: #fca311; text-decoration: none; padding: 10px;">Logout</a>
+        <a href="index.html" style="color: #fca311; text-decoration: none; padding: 10px; font-weight: bold;">Logout</a>
     </div>
 
     <div class="main">
@@ -46,20 +49,17 @@
             <button onclick="toggleDarkMode()" id="mode-btn">🌙 Dark Mode</button>
         </header>
 
-        <!-- Computing Section -->
-        <h2 style="margin-bottom: 20px;">💻 Computing Courses</h2>
+        <h2 id="comp-sec" style="margin-bottom: 20px; color: #14213d;">💻 Computing Courses</h2>
         <div class="grid" id="computing-grid">
-            <p>Loading computing books...</p>
+            <p>መጽሐፍት በመጫን ላይ ናቸው...</p>
         </div>
 
-        <!-- Engineering Section -->
-        <h2 style="margin-bottom: 20px;">🏗️ Engineering Courses</h2>
+        <h2 id="eng-sec" style="margin-bottom: 20px; color: #14213d;">🏗️ Engineering Courses</h2>
         <div class="grid" id="engineering-grid">
-            <p>Loading engineering books...</p>
+            <p>መጽሐፍት በመጫን ላይ ናቸው...</p>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
@@ -79,22 +79,22 @@
         async function loadBooks() {
             try {
                 const querySnapshot = await getDocs(collection(db, "books"));
-                const computingGrid = document.getElementById("computing-grid");
-                const engineeringGrid = document.getElementById("engineering-grid");
+                const compGrid = document.getElementById("computing-grid");
+                const engGrid = document.getElementById("engineering-grid");
 
-                // መጀመሪያ ባዶ ማድረግ
-                computingGrid.innerHTML = "";
-                engineeringGrid.innerHTML = "";
+                compGrid.innerHTML = "";
+                engGrid.innerHTML = "";
 
-                let compFound = false;
-                let engFound = false;
+                let cCount = 0;
+                let eCount = 0;
 
                 querySnapshot.forEach((doc) => {
                     const book = doc.data();
                     
-                    // ዳታቤዙ ላይ የፊደል ልዩነት ቢኖር እንኳ እንዲያገኘው (title vs Title)
-                    const title = book.title || book.Title || 'Untitled';
-                    const category = (book.category || book.Category || 'General').trim().toLowerCase();
+                    // ዳታቤዙ ላይ ስሙ በትልቅም በትንሽም ቢጻፍ (Title vs title) እንዲያገኘው
+                    const title = book.title || book.Title || 'Untitled Book';
+                    const rawCategory = book.category || book.Category || '';
+                    const category = rawCategory.trim().toLowerCase(); // ባዶ ቦታን እና ካፒታል ፊደልን ያስተካክላል
                     const desc = book.description || book.Description || 'No description available';
                     const link = book.link || book.Link || '#';
 
@@ -106,23 +106,21 @@
                         </div>
                     `;
 
-                    // በካቴጎሪ መለየት
                     if (category === "computing") {
-                        computingGrid.innerHTML += bookHTML;
-                        compFound = true;
+                        compGrid.innerHTML += bookHTML;
+                        cCount++;
                     } else if (category === "engineering") {
-                        engineeringGrid.innerHTML += bookHTML;
-                        engFound = true;
+                        engGrid.innerHTML += bookHTML;
+                        eCount++;
                     }
                 });
 
-                // ምንም መጽሐፍ ካልተገኘ
-                if (!compFound) computingGrid.innerHTML = "<p>No computing books found.</p>";
-                if (!engFound) engineeringGrid.innerHTML = "<p>No engineering books found.</p>";
+                if (cCount === 0) compGrid.innerHTML = "<p>ምንም የ Computing መጽሐፍ አልተገኘም።</p>";
+                if (eCount === 0) engGrid.innerHTML = "<p>ምንም የ Engineering መጽሐፍ አልተገኘም።</p>";
 
             } catch (error) {
-                console.error("Firebase Error:", error);
-                document.getElementById("computing-grid").innerHTML = "<p style='color:red;'>Error connecting to Database.</p>";
+                console.error("Error:", error);
+                document.getElementById("computing-grid").innerHTML = "<p>Error loading data. Please check Firebase rules.</p>";
             }
         }
 
@@ -131,10 +129,9 @@
 
     <script>
         function toggleDarkMode() {
-            var element = document.body;
-            element.classList.toggle("dark-mode");
-            var btn = document.getElementById("mode-btn");
-            btn.innerHTML = element.classList.contains("dark-mode") ? "☀️ Light Mode" : "🌙 Dark Mode";
+            document.body.classList.toggle("dark-mode");
+            const btn = document.getElementById("mode-btn");
+            btn.innerHTML = document.body.classList.contains("dark-mode") ? "☀️ Light Mode" : "🌙 Dark Mode";
         }
     </script>
 </body>
