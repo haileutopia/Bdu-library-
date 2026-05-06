@@ -3,136 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | BDU Library</title>
+    <title>BiT Digital Library | New Era</title>
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { display: flex; margin: 0; background: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: 0.3s; }
-        .sidebar { width: 260px; background: #14213d; height: 100vh; color: white; padding: 30px 20px; position: fixed; transition: 0.3s; z-index: 1000; }
-        .sidebar h2 { color: #fca311; margin-bottom: 40px; font-size: 24px; }
-        .menu-item { padding: 15px; cursor: pointer; color: #adb5bd; transition: 0.3s; display: block; text-decoration: none; }
-        .menu-item:hover { color: white; background: rgba(255,255,255,0.1); border-radius: 5px; }
-        .main { margin-left: 260px; padding: 40px; width: 100%; min-height: 100vh; transition: 0.3s; }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #e5e5e5; padding-bottom: 10px; }
-        #mode-btn { padding: 10px 20px; cursor: pointer; border-radius: 20px; border: none; background: #fca311; font-weight: bold; transition: 0.3s; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; margin-bottom: 40px; }
-        .resource-card { background: white; padding: 25px; border-radius: 12px; border-left: 6px solid #fca311; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: 0.3s; }
-        .resource-card:hover { transform: translateY(-5px); }
-        .resource-card h3 { margin-top: 0; color: #14213d; font-size: 1.2rem; }
-        .resource-card p { color: #555; font-size: 0.9rem; line-height: 1.5; }
-        .btn-sm { display: inline-block; margin-top: 15px; padding: 10px 20px; background: #14213d; text-decoration: none; color: white; font-size: 0.85rem; border-radius: 6px; font-weight: bold; }
-        .btn-sm:hover { background: #fca311; color: #14213d; }
-        
-        /* Dark Mode */
-        body.dark-mode { background-color: #1a1a1a; color: #ffffff; }
-        .dark-mode .sidebar { background-color: #000000; }
-        .dark-mode .resource-card { background-color: #2d2d2d; color: white; border-left: 6px solid #fca311; }
-        .dark-mode .resource-card h3 { color: #fca311; }
-        .dark-mode .resource-card p { color: #ccc; }
-        .dark-mode header { border-bottom: 2px solid #333; }
+        :root {
+            --primary: #1e3a8a; /* Deep Blue */
+            --secondary: #f59e0b; /* Amber */
+            --bg-light: #f8fafc;
+            --text-main: #1e293b;
+            --white: #ffffff;
+        }
 
-        @media (max-width: 900px) { .sidebar { width: 70px; padding: 20px 10px; } .sidebar h2, .menu-item span { display: none; } .main { margin-left: 70px; } }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            display: flex;
+        }
+
+        /* Sidebar Design */
+        .sidebar {
+            width: 260px;
+            background: var(--primary);
+            height: 100vh;
+            color: white;
+            position: fixed;
+            padding: 30px 20px;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: 0.3s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--secondary);
+        }
+
+        /* Main Content */
+        .content {
+            margin-left: 300px;
+            padding: 40px;
+            width: calc(100% - 340px);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .search-bar {
+            background: var(--white);
+            padding: 10px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 300px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            width: 100%;
+        }
+
+        /* Course Sections */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--secondary);
+            padding-left: 15px;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        /* Book Card Design */
+        .book-card {
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .book-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .book-card .card-info {
+            padding: 20px;
+        }
+
+        .book-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        .book-card p {
+            font-size: 0.9rem;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .download-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .download-btn:hover {
+            background: var(--secondary);
+            color: var(--primary);
+        }
+
+        /* Logout Button */
+        .logout-btn {
+            position: absolute;
+            bottom: 40px;
+            left: 20px;
+            color: #f87171;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <h2>BDU BiT</h2>
-        <a href="#" class="menu-item">🏠 <span>Dashboard</span></a>
-        <a href="#comp-sec" class="menu-item">💻 <span>Computing</span></a>
-        <a href="#eng-sec" class="menu-item">🏗️ <span>Engineering</span></a>
-        <br>
-        <a href="index.html" style="color: #fca311; text-decoration: none; padding: 10px; font-weight: bold;">Logout</a>
-    </div>
+    <aside class="sidebar">
+        <h2><i class="fas fa-university"></i> BDU BiT</h2>
+        <nav>
+            <a href="#" class="nav-link active"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="#" class="nav-link"><i class="fas fa-laptop-code"></i> Computing</a>
+            <a href="#" class="nav-link"><i class="fas fa-hard-hat"></i> Engineering</a>
+        </nav>
+        <a href="index.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </aside>
 
-    <div class="main">
+    <main class="content">
         <header>
-            <h1>BiT Digital Library</h1>
-            <button onclick="toggleDarkMode()" id="mode-btn">🌙 Dark Mode</button>
+            <h1>Digital Library</h1>
+            <div class="search-bar">
+                <i class="fas fa-search" style="color: #94a3b8;"></i>
+                <input type="text" placeholder="Search books...">
+            </div>
         </header>
 
-        <h2 id="comp-sec" style="margin-bottom: 20px; color: #14213d;">💻 Computing Courses</h2>
-        <div class="grid" id="computing-grid">
-            <p>መጽሐፍት በመጫን ላይ ናቸው...</p>
+        <h2 class="section-title">Computing Courses</h2>
+        <div class="books-grid">
+            <!-- ለምሳሌ የሚቀመጥ መጽሐፍ -->
+            <div class="book-card">
+                <div class="card-info">
+                    <h3>Data Structures & Algorithms</h3>
+                    <p>Master the fundamentals of DSA with this comprehensive guide for beginners.</p>
+                    <a href="#" class="download-btn"><i class="fas fa-download"></i> Download PDF</a>
+                </div>
+            </div>
         </div>
 
-        <h2 id="eng-sec" style="margin-bottom: 20px; color: #14213d;">🏗️ Engineering Courses</h2>
-        <div class="grid" id="engineering-grid">
-            <p>መጽሐፍት በመጫን ላይ ናቸው...</p>
+        <h2 class="section-title">Engineering Courses</h2>
+        <div class="books-grid">
+            <!-- ለምሳሌ የሚቀመጥ መጽሐፍ -->
+            <div class="book-card">
+                <div class="card-info">
+                    <h3>Civil Engineering Basics</h3>
+                    <p>Learn about structural analysis and modern building materials.</p>
+                    <a href="#" class="download-btn"><i class="fas fa-download"></i> Download PDF</a>
+                </div>
+            </div>
         </div>
-    </div>
+    </main>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAffCW8wwCs8f2YmpNfHFdOukrEc_CwVRU",
-            authDomain: "bit-library-5b48a.firebaseapp.com",
-            projectId: "bit-library-5b48a",
-            storageBucket: "bit-library-5b48a.firebasestorage.app",
-            messagingSenderId: "945815538835",
-            appId: "1:945815538835:web:2dd95cd993dc6c2865d166"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        async function loadBooks() {
-            try {
-                const querySnapshot = await getDocs(collection(db, "books"));
-                const compGrid = document.getElementById("computing-grid");
-                const engGrid = document.getElementById("engineering-grid");
-
-                compGrid.innerHTML = "";
-                engGrid.innerHTML = "";
-
-                let cCount = 0;
-                let eCount = 0;
-
-                querySnapshot.forEach((doc) => {
-                    const book = doc.data();
-                    
-                    // ዳታቤዙ ላይ ስሙ በትልቅም በትንሽም ቢጻፍ (Title vs title) እንዲያገኘው
-                    const title = book.title || book.Title || 'Untitled Book';
-                    const rawCategory = book.category || book.Category || '';
-                    const category = rawCategory.trim().toLowerCase(); // ባዶ ቦታን እና ካፒታል ፊደልን ያስተካክላል
-                    const desc = book.description || book.Description || 'No description available';
-                    const link = book.link || book.Link || '#';
-
-                    const bookHTML = `
-                        <div class="resource-card">
-                            <h3>${title}</h3>
-                            <p>${desc}</p>
-                            <a href="${link}" class="btn-sm" target="_blank">Download PDF</a>
-                        </div>
-                    `;
-
-                    if (category === "computing") {
-                        compGrid.innerHTML += bookHTML;
-                        cCount++;
-                    } else if (category === "engineering") {
-                        engGrid.innerHTML += bookHTML;
-                        eCount++;
-                    }
-                });
-
-                if (cCount === 0) compGrid.innerHTML = "<p>ምንም የ Computing መጽሐፍ አልተገኘም።</p>";
-                if (eCount === 0) engGrid.innerHTML = "<p>ምንም የ Engineering መጽሐፍ አልተገኘም።</p>";
-
-            } catch (error) {
-                console.error("Error:", error);
-                document.getElementById("computing-grid").innerHTML = "<p>Error loading data. Please check Firebase rules.</p>";
-            }
-        }
-
-        loadBooks();
-    </script>
-
-    <script>
-        function toggleDarkMode() {
-            document.body.classList.toggle("dark-mode");
-            const btn = document.getElementById("mode-btn");
-            btn.innerHTML = document.body.classList.contains("dark-mode") ? "☀️ Light Mode" : "🌙 Dark Mode";
-        }
-    </script>
 </body>
 </html>
