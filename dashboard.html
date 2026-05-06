@@ -14,14 +14,13 @@
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         #mode-btn { padding: 10px 20px; cursor: pointer; border-radius: 20px; border: none; background: #fca311; font-weight: bold; transition: 0.3s; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-bottom: 40px; }
-        .resource-card { background: white; padding: 25px; border-radius: 10px; border-left: 5px solid #fca311; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; }
+        .resource-card { background: white; padding: 25px; border-radius: 10px; border-left: 5px solid #fca311; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; margin-bottom: 10px; }
         .resource-card h3 { margin-top: 0; color: #14213d; }
         .btn-sm { display: inline-block; margin-top: 15px; padding: 8px 15px; background: #e5e5e5; text-decoration: none; color: #333; font-size: 0.8rem; border-radius: 5px; }
         .btn-sm:hover { background: #fca311; color: white; }
         body.dark-mode { background-color: #1a1a1a; color: #ffffff; }
         .dark-mode .sidebar { background-color: #000000; }
         .dark-mode .resource-card { background-color: #2d2d2d; color: white; }
-        .dark-mode .resource-card h3 { color: #fca311; }
         @media (max-width: 900px) { .sidebar { width: 70px; padding: 20px 10px; } .sidebar h2, .menu-item span { display: none; } .main { margin-left: 70px; } }
     </style>
 </head>
@@ -42,14 +41,9 @@
             <button onclick="toggleDarkMode()" id="mode-btn">🌙 Dark Mode</button>
         </header>
 
-        <h2 style="margin-bottom: 20px;">💻 Computing Courses</h2>
-        <div class="grid" id="computing-grid">
-            <p>Loading computing books...</p>
-        </div>
-
-        <h2 style="margin-bottom: 20px;">🏗️ Engineering Courses</h2>
-        <div class="grid" id="engineering-grid">
-            <p>Loading engineering books...</p>
+        <h2 style="margin-bottom: 20px;">📚 All Available Resources</h2>
+        <div class="grid" id="all-books-grid">
+            <p>Loading resources from database...</p>
         </div>
     </div>
 
@@ -73,44 +67,35 @@
         async function loadBooks() {
             try {
                 const querySnapshot = await getDocs(collection(db, "books"));
-                const computingGrid = document.getElementById("computing-grid");
-                const engineeringGrid = document.getElementById("engineering-grid");
+                const mainGrid = document.getElementById("all-books-grid");
+                
+                mainGrid.innerHTML = ""; // መጀመሪያ ባዶ ማድረግ
 
-                computingGrid.innerHTML = "";
-                engineeringGrid.innerHTML = "";
-
-                let computingCount = 0;
-                let engineeringCount = 0;
+                if (querySnapshot.empty) {
+                    mainGrid.innerHTML = "<p>ዳታቤዙ ውስጥ ምንም መጽሐፍ አልተገኘም (Database is empty).</p>";
+                    return;
+                }
 
                 querySnapshot.forEach((doc) => {
                     const book = doc.data();
+                    console.log("Found book:", book); // ለሙከራ ኮንሶል ላይ ማየት
+
                     const bookHTML = `
                         <div class="resource-card">
-                            <h3>${book.title}</h3>
+                            <h3>${book.title || 'Untitled'}</h3>
+                            <p>Category: ${book.category || 'General'}</p>
                             <p>${book.description || 'No description available'}</p>
-                            <a href="${book.link || '#'}" class="btn-sm" target="_blank">Download PDF</a>
+                            <a href="${book.link || '#'}" class="btn-sm" target="_blank">View / Download</a>
                         </div>
                     `;
-
-                    // እዚህ ጋር ነው ስህተቱን ያስተካከልኩት - trim() እና toLowerCase() ተጨምሯል
-                    const category = book.category ? book.category.trim().toLowerCase() : "";
-
-                    if (category === "computing") {
-                        computingGrid.innerHTML += bookHTML;
-                        computingCount++;
-                    } else if (category === "engineering") {
-                        engineeringGrid.innerHTML += bookHTML;
-                        engineeringCount++;
-                    }
+                    mainGrid.innerHTML += bookHTML;
                 });
 
-                if(computingCount === 0) computingGrid.innerHTML = "<p>No computing books found.</p>";
-                if(engineeringCount === 0) engineeringGrid.innerHTML = "<p>No engineering books found.</p>";
-
-                console.log("Books loaded successfully!");
             } catch (error) {
-                console.error("Error loading books: ", error);
-                document.getElementById("computing-grid").innerHTML = "<p>Error loading data. Check Firebase Rules.</p>";
+                console.error("Firebase Error:", error);
+                document.getElementById("all-books-grid").innerHTML = `
+                    <p style="color:red;">Error: ዳታውን ማምጣት አልተቻለም።<br>
+                    ምክንያት፦ ${error.message}</p>`;
             }
         }
 
