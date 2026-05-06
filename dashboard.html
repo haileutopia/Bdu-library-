@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | BDU Library</title>
     <style>
+        /* CSS ዲዛይን */
         body { display: flex; margin: 0; background: #f4f7f6; font-family: sans-serif; transition: 0.3s; }
         .sidebar { width: 260px; background: #14213d; height: 100vh; color: white; padding: 30px 20px; position: fixed; transition: 0.3s; z-index: 1000; }
         .sidebar h2 { color: #fca311; margin-bottom: 40px; }
@@ -14,13 +15,17 @@
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         #mode-btn { padding: 10px 20px; cursor: pointer; border-radius: 20px; border: none; background: #fca311; font-weight: bold; transition: 0.3s; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-bottom: 40px; }
-        .resource-card { background: white; padding: 25px; border-radius: 10px; border-left: 5px solid #fca311; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; margin-bottom: 10px; }
+        .resource-card { background: white; padding: 25px; border-radius: 10px; border-left: 5px solid #fca311; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; }
         .resource-card h3 { margin-top: 0; color: #14213d; }
         .btn-sm { display: inline-block; margin-top: 15px; padding: 8px 15px; background: #e5e5e5; text-decoration: none; color: #333; font-size: 0.8rem; border-radius: 5px; }
         .btn-sm:hover { background: #fca311; color: white; }
+        
+        /* Dark Mode */
         body.dark-mode { background-color: #1a1a1a; color: #ffffff; }
         .dark-mode .sidebar { background-color: #000000; }
         .dark-mode .resource-card { background-color: #2d2d2d; color: white; }
+        .dark-mode .resource-card h3 { color: #fca311; }
+        
         @media (max-width: 900px) { .sidebar { width: 70px; padding: 20px 10px; } .sidebar h2, .menu-item span { display: none; } .main { margin-left: 70px; } }
     </style>
 </head>
@@ -41,9 +46,16 @@
             <button onclick="toggleDarkMode()" id="mode-btn">🌙 Dark Mode</button>
         </header>
 
-        <h2 style="margin-bottom: 20px;">📚 All Available Resources</h2>
-        <div class="grid" id="all-books-grid">
-            <p>Loading resources from database...</p>
+        <!-- Computing Section -->
+        <h2 style="margin-bottom: 20px;">💻 Computing Courses</h2>
+        <div class="grid" id="computing-grid">
+            <p>Loading computing books...</p>
+        </div>
+
+        <!-- Engineering Section -->
+        <h2 style="margin-bottom: 20px;">🏗️ Engineering Courses</h2>
+        <div class="grid" id="engineering-grid">
+            <p>Loading engineering books...</p>
         </div>
     </div>
 
@@ -67,35 +79,50 @@
         async function loadBooks() {
             try {
                 const querySnapshot = await getDocs(collection(db, "books"));
-                const mainGrid = document.getElementById("all-books-grid");
-                
-                mainGrid.innerHTML = ""; // መጀመሪያ ባዶ ማድረግ
+                const computingGrid = document.getElementById("computing-grid");
+                const engineeringGrid = document.getElementById("engineering-grid");
 
-                if (querySnapshot.empty) {
-                    mainGrid.innerHTML = "<p>ዳታቤዙ ውስጥ ምንም መጽሐፍ አልተገኘም (Database is empty).</p>";
-                    return;
-                }
+                // መጀመሪያ ባዶ ማድረግ
+                computingGrid.innerHTML = "";
+                engineeringGrid.innerHTML = "";
+
+                let compFound = false;
+                let engFound = false;
 
                 querySnapshot.forEach((doc) => {
                     const book = doc.data();
-                    console.log("Found book:", book); // ለሙከራ ኮንሶል ላይ ማየት
+                    
+                    // ዳታቤዙ ላይ የፊደል ልዩነት ቢኖር እንኳ እንዲያገኘው (title vs Title)
+                    const title = book.title || book.Title || 'Untitled';
+                    const category = (book.category || book.Category || 'General').trim().toLowerCase();
+                    const desc = book.description || book.Description || 'No description available';
+                    const link = book.link || book.Link || '#';
 
                     const bookHTML = `
                         <div class="resource-card">
-                            <h3>${book.title || 'Untitled'}</h3>
-                            <p>Category: ${book.category || 'General'}</p>
-                            <p>${book.description || 'No description available'}</p>
-                            <a href="${book.link || '#'}" class="btn-sm" target="_blank">View / Download</a>
+                            <h3>${title}</h3>
+                            <p>${desc}</p>
+                            <a href="${link}" class="btn-sm" target="_blank">Download PDF</a>
                         </div>
                     `;
-                    mainGrid.innerHTML += bookHTML;
+
+                    // በካቴጎሪ መለየት
+                    if (category === "computing") {
+                        computingGrid.innerHTML += bookHTML;
+                        compFound = true;
+                    } else if (category === "engineering") {
+                        engineeringGrid.innerHTML += bookHTML;
+                        engFound = true;
+                    }
                 });
+
+                // ምንም መጽሐፍ ካልተገኘ
+                if (!compFound) computingGrid.innerHTML = "<p>No computing books found.</p>";
+                if (!engFound) engineeringGrid.innerHTML = "<p>No engineering books found.</p>";
 
             } catch (error) {
                 console.error("Firebase Error:", error);
-                document.getElementById("all-books-grid").innerHTML = `
-                    <p style="color:red;">Error: ዳታውን ማምጣት አልተቻለም።<br>
-                    ምክንያት፦ ${error.message}</p>`;
+                document.getElementById("computing-grid").innerHTML = "<p style='color:red;'>Error connecting to Database.</p>";
             }
         }
 
